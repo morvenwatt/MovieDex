@@ -24,8 +24,11 @@ app.use(function validateApiKey(req, res, next) {
 })
 
 
-app.get('/movies', function handleGetMovies(req, res) {
-    let response = MOVIEDEX.movie;
+app.get('/movie', function handleGetMovies(req, res) {
+    let response = MOVIEDEX;
+
+    console.log(response)
+
     if (req.query.genre) {
         response = response.filter(movie =>
             movie.genre.toLowerCase().includes(req.query.genre.toLowerCase())
