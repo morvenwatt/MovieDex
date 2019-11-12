@@ -1,14 +1,15 @@
 require('dotenv').config()
 const express = require('express');
 const morgan = require('morgan');
+const morganSetting = process.env.NODE_ENV === 'production' ? 'tiny' : 'common';
 const MOVIEDEX = require('./moviedex.json');
 const helmet = require ('helmet');
 const cors = require('cors');
 
-// console.log(process.env.API_KEY)
+
 
 const app = express();
-app.use(morgan('dev'));
+app.use(morgan(morganSetting));
 app.use(cors())
 app.use(helmet());
 
@@ -47,11 +48,19 @@ app.get('/movie', function handleGetMovies(req, res) {
     res.json(response)
 })
 
+app.use((error, req, res, next) => {
+    let response
+    if (process.env.NODE_ENV === 'production') {
+        response = { error: { message: 'server error'}}
+    } else {
+        response = {error }
+    }
+    res.status(500).json(response)
+})
 
 
 
-
-const PORT = 8000
+const PORT = process.env.port || 8000
 app.listen(PORT, () => {
     console.log(`Server listening at http://localhost:${PORT}`)
 })
